@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/devcontainers/php
 
+USER vscode
+
 ENV COMPOSER_HOME="/home/vscode/.composer"
 ENV COMPOSER_BIN_DIR="/home/vscode/.composer/vendor/bin"
 
