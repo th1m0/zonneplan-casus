@@ -22,7 +22,7 @@ final class EnergyDataServiceProvider extends ServiceProvider
 
         $this->app->bind(
             EnergyDataServiceInterface::class,
-            fn($app): ZonneplanEnergyApiService => new ZonneplanEnergyApiService(
+            fn ($app): ZonneplanEnergyApiService => new ZonneplanEnergyApiService(
                 $app->make(HttpClient::class),
                 config('energy.api_base_url', ''),
                 config('energy.api_key', '')

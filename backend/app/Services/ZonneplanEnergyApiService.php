@@ -27,13 +27,13 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
             $response = $this->httpClient->withHeaders([
                 // 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Accept' => 'application/json',
-            ])->get($this->baseUrl . '/electricity/upcoming', [
+            ])->get($this->baseUrl.'/electricity/upcoming', [
                 'date' => $date->format('Y-m-d'),
                 'secret' => $this->apiKey,
             ]);
 
             if (! $response->successful()) {
-                throw new Exception('API request failed: ' . $response->status());
+                throw new Exception('API request failed: '.$response->status());
             }
 
             $data = $response->json();
@@ -53,15 +53,15 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
 
         try {
             $response = $this->httpClient->withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Authorization' => 'Bearer '.$this->apiKey,
                 'Accept' => 'application/json',
-            ])->get($this->baseUrl . '/electricity/upcoming', [
+            ])->get($this->baseUrl.'/electricity/upcoming', [
                 'date' => $date->format('Y-m-d'),
                 'secret' => 'mzRqGxv9dzaatsFgcXoVJbh6pdMDwDxEWBhbZ89r',
             ]);
 
             if (! $response->successful()) {
-                throw new Exception('API request failed: ' . $response->status());
+                throw new Exception('API request failed: '.$response->status());
             }
 
             $data = $response->json();
@@ -78,7 +78,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
 
     private function transformElectricityData(array $data): array
     {
-        return collect($data['data'] ?? [])->map(fn($rate): ElectricityRateDTO => new ElectricityRateDTO(
+        return collect($data['data'] ?? [])->map(fn ($rate): ElectricityRateDTO => new ElectricityRateDTO(
             periodStart: Carbon::createFromTimestamp($rate['start_date']),
             periodEnd: Carbon::createFromTimestamp($rate['end_date']),
             period: $rate['period'],
@@ -98,7 +98,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
 
     private function transformGasData(array $data): array
     {
-        return collect($data['data'] ?? [])->map(fn($rate): GasRateDTO => new GasRateDTO(
+        return collect($data['data'] ?? [])->map(fn ($rate): GasRateDTO => new GasRateDTO(
             periodStart: Carbon::createFromTimestamp($rate['start_date']),
             periodEnd: Carbon::createFromTimestamp($rate['end_date']),
             period: $rate['period'],

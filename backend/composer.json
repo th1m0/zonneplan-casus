@@ -23,7 +23,9 @@
         "nunomaduro/collision": "^8.6",
         "phpunit/phpunit": "^11.5.3",
         "symfony/console": "7.2.7",
-        "rector/rector": "^2.0"
+        "rector/rector": "^2.0",
+        "pestphp/pest": "^3.7",
+        "pestphp/pest-plugin-type-coverage": "^3.2"
     },
     "autoload": {
         "psr-4": {
@@ -57,9 +59,19 @@
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
         ],
+        "rector": "rector",
+        "lint": "pint",
+        "test:rector": "rector --dry-run",
+        "test:lint": "pint --test",
+        "test:types": "phpstan analyse",
+        "test:unit": "pest --colors=always --parallel --coverage --exactly=100",
+        "test:type-coverage": "pest --type-coverage --min=100",
         "test": [
-            "@php artisan config:clear --ansi",
-            "@php artisan test"
+            "@test:type-coverage",
+            "@test:rector",
+            "@test:lint",
+            "@test:types",
+            "@test:unit"
         ]
     },
     "extra": {
