@@ -9,7 +9,10 @@ on:
       - main
 
 jobs:
-  ci:
+  ci-backend:
+    defaults:
+      run:
+        working-directory: './backend'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -17,7 +20,6 @@ jobs:
         php: [8.4]
 
     name: Tests
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -66,7 +68,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.npm-cache.outputs.cache-hit != 'true' 
         run: npm install
 
       - name: Build dependencies
