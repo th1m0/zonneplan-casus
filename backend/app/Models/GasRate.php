@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +13,9 @@ final class GasRate extends Model
 {
     use HasFactory;
 
+    /**
+     * @var array<int, string>
+     */
     protected $fillable = [
         'period_start',
         'period_end',
@@ -25,6 +29,9 @@ final class GasRate extends Model
         'metadata',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'period_start' => 'datetime',
         'period_end' => 'datetime',
@@ -36,24 +43,22 @@ final class GasRate extends Model
         'metadata' => 'array',
     ];
 
-    // Primary scope - get data for a specific day
-    public function scopeForDay($query, Carbon $date)
+    /**
+     * @param  Builder<GasRate>  $query
+     * @return Builder<GasRate>
+     */
+    public function scopeForDay(Builder $query, Carbon $date): Builder
     {
         return $query->where('rate_date', $date->toDateString());
     }
 
-    // Get all available days
-    public function scopeAvailableDays($query)
+    /**
+     * @param  Builder<GasRate>  $query
+     * @return Builder<GasRate>
+     */
+    public function scopeLatestDay(Builder $query): Builder
     {
-        return $query->select('rate_date')
-            ->distinct()
-            ->orderBy('rate_date', 'desc');
-    }
-
-    // Get latest available day
-    public function scopeLatestDay($query)
-    {
-        return $query->orderBy('rate_date', 'desc')->first();
+        return $query->orderBy('rate_date', 'desc');
     }
 
     // Accessors for euro conversion

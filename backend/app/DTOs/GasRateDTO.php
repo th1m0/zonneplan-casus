@@ -8,6 +8,9 @@ use Carbon\Carbon;
 
 final readonly class GasRateDTO
 {
+    /**
+     * @param  array<string, scalar|null>|null  $metadata
+     */
     public function __construct(
         public Carbon $periodStart,
         public Carbon $periodEnd,
@@ -20,6 +23,20 @@ final readonly class GasRateDTO
         public ?array $metadata = null
     ) {}
 
+    /**
+     * @return array{
+     *     period_start: Carbon,
+     *     period_end: Carbon,
+     *     rate_date: string,
+     *     period: string,
+     *     market_price: int,
+     *     total_price_tax_included: int,
+     *     price_incl_handling_vat: int,
+     *     price_tax_with_vat: int,
+     *     currency: string,
+     *     metadata: array<string, scalar|null>|null
+     * }
+     */
     public function toArray(): array
     {
         return [

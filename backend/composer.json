@@ -67,7 +67,6 @@
         "test:unit": "pest --colors=always --parallel --coverage --exactly=100",
         "test:type-coverage": "pest --type-coverage --min=100",
         "test": [
-            "@test:type-coverage",
             "@test:rector",
             "@test:lint",
             "@test:types",

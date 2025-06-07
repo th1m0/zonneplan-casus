@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +13,9 @@ final class ElectricityRate extends Model
 {
     use HasFactory;
 
+    /**
+     * @var array<int, string>
+     */
     protected $fillable = [
         'period_start',
         'period_end',
@@ -28,6 +32,9 @@ final class ElectricityRate extends Model
         'metadata',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'period_start' => 'datetime',
         'period_end' => 'datetime',
@@ -41,29 +48,30 @@ final class ElectricityRate extends Model
         'metadata' => 'array',
     ];
 
-    // Primary scope - get all data for a specific day
-    public function scopeForDay($query, Carbon $date)
+    /**
+     * @param  Builder<ElectricityRate>  $query
+     * @return Builder<ElectricityRate>
+     */
+    public function scopeForDay(Builder $query, Carbon $date): Builder
     {
         return $query->where('rate_date', $date->toDateString())
             ->orderBy('period_start');
     }
 
-    // Get all available days
-    public function scopeAvailableDays($query)
-    {
-        return $query->select('rate_date')
-            ->distinct()
-            ->orderBy('rate_date', 'desc');
-    }
-
-    // Check if we have complete data for a day (should be 24 hours)
-    public function scopeCompleteDay($query, Carbon $date)
+    /**
+     * @param  Builder<ElectricityRate>  $query
+     * @return Builder<ElectricityRate>
+     */
+    public function scopeCompleteDay(Builder $query, Carbon $date): Builder
     {
         return $query->forDay($date)->havingRaw('COUNT(*) = 24');
     }
 
-    // Get latest available day
-    public function scopeLatestDay($query)
+    /**
+     * @param  Builder<ElectricityRate>  $query
+     * @return Builder<ElectricityRate>
+     */
+    public function scopeLatestDay(Builder $query): Builder
     {
         return $query->orderBy('rate_date', 'desc')->limit(24);
     }

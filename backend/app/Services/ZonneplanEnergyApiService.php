@@ -20,6 +20,11 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         private string $apiKey
     ) {}
 
+    /**
+     * @return array<int, ElectricityRateDTO>
+     *
+     * @throws Exception
+     */
     public function getElectricityRates(Carbon $date): array
     {
         // TODO: Uncomment and implement actual API call
@@ -36,6 +41,20 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
                 throw new Exception('API request failed: '.$response->status());
             }
 
+            /** @var array{data: array<int, array{
+             *     start_date: int|string,
+             *     end_date: int|string,
+             *     period: string,
+             *     market_price: int|string,
+             *     total_price_tax_included: int|string,
+             *     price_incl_handling_vat: int|string,
+             *     price_tax_with_vat: int|string,
+             *     pricing_profile?: string|null,
+             *     carbon_footprint_in_gram?: int|string|null,
+             *     sustainability_score?: int|string|null,
+             *     start_date_datetime?: string|null
+             * }>} $data
+             */
             $data = $response->json();
 
             return $this->transformElectricityData($data);
@@ -48,6 +67,11 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         }
     }
 
+    /**
+     * @return array<int, GasRateDTO>
+     *
+     * @throws Exception
+     */
     public function getGasRates(Carbon $date): array
     {
 
@@ -64,6 +88,17 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
                 throw new Exception('API request failed: '.$response->status());
             }
 
+            /** @var array{data: array<int, array{
+             *     start_date: int|string,
+             *     end_date: int|string,
+             *     period: string,
+             *     market_price: int|string,
+             *     total_price_tax_included: int|string,
+             *     price_incl_handling_vat: int|string,
+             *     price_tax_with_vat: int|string,
+             *     start_date_datetime?: string|null
+             * }>} $data
+             */
             $data = $response->json();
 
             return $this->transformGasData($data);
@@ -76,40 +111,81 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         }
     }
 
+    /**
+     * @param array{data: array<int, array{
+     *     start_date: int|string,
+     *     end_date: int|string,
+     *     period: string,
+     *     market_price: int|string,
+     *     total_price_tax_included: int|string,
+     *     price_incl_handling_vat: int|string,
+     *     price_tax_with_vat: int|string,
+     *     pricing_profile?: string|null,
+     *     carbon_footprint_in_gram?: int|string|null,
+     *     sustainability_score?: int|string|null,
+     *     start_date_datetime?: string|null
+     * }>} $data
+     * @return array<int, ElectricityRateDTO>
+     */
     private function transformElectricityData(array $data): array
     {
-        return collect($data['data'] ?? [])->map(fn ($rate): ElectricityRateDTO => new ElectricityRateDTO(
-            periodStart: Carbon::createFromTimestamp($rate['start_date']),
-            periodEnd: Carbon::createFromTimestamp($rate['end_date']),
-            period: $rate['period'],
-            marketPrice: $rate['market_price'],
-            totalPriceTaxIncluded: $rate['total_price_tax_included'],
-            priceInclHandlingVat: $rate['price_incl_handling_vat'],
-            priceTaxWithVat: $rate['price_tax_with_vat'],
-            pricingProfile: $rate['pricing_profile'] ?? null,
-            carbonFootprintInGram: $rate['carbon_footprint_in_gram'],
-            sustainabilityScore: $rate['sustainability_score'] ?? null,
-            metadata: [
-                'start_date_datetime' => $rate['start_date_datetime'] ?? null,
-                'source' => 'zonneplan_api',
-            ]
-        ))->toArray();
+        $result = [];
+
+        foreach ($data['data'] as $rate) {
+            $result[] = new ElectricityRateDTO(
+                periodStart: Carbon::createFromTimestamp((int) $rate['start_date']),
+                periodEnd: Carbon::createFromTimestamp((int) $rate['end_date']),
+                period: (string) $rate['period'],
+                marketPrice: (int) $rate['market_price'],
+                totalPriceTaxIncluded: (int) $rate['total_price_tax_included'],
+                priceInclHandlingVat: (int) $rate['price_incl_handling_vat'],
+                priceTaxWithVat: (int) $rate['price_tax_with_vat'],
+                pricingProfile: $rate['pricing_profile'] ?? null,
+                carbonFootprintInGram: isset($rate['carbon_footprint_in_gram']) ? (int) $rate['carbon_footprint_in_gram'] : null,
+                sustainabilityScore: isset($rate['sustainability_score']) ? (int) $rate['sustainability_score'] : null,
+                metadata: [
+                    'start_date_datetime' => $rate['start_date_datetime'] ?? null,
+                    'source' => 'zonneplan_api',
+                ]
+            );
+        }
+
+        return $result;
     }
 
+    /**
+     * @param array{data: array<int, array{
+     *     start_date: int|string,
+     *     end_date: int|string,
+     *     period: string,
+     *     market_price: int|string,
+     *     total_price_tax_included: int|string,
+     *     price_incl_handling_vat: int|string,
+     *     price_tax_with_vat: int|string,
+     *     start_date_datetime?: string|null
+     * }>} $data
+     * @return array<int, GasRateDTO>
+     */
     private function transformGasData(array $data): array
     {
-        return collect($data['data'] ?? [])->map(fn ($rate): GasRateDTO => new GasRateDTO(
-            periodStart: Carbon::createFromTimestamp($rate['start_date']),
-            periodEnd: Carbon::createFromTimestamp($rate['end_date']),
-            period: $rate['period'],
-            marketPrice: $rate['market_price'],
-            totalPriceTaxIncluded: $rate['total_price_tax_included'],
-            priceInclHandlingVat: $rate['price_incl_handling_vat'],
-            priceTaxWithVat: $rate['price_tax_with_vat'],
-            metadata: [
-                'start_date_datetime' => $rate['start_date_datetime'] ?? null,
-                'source' => 'zonneplan_api',
-            ]
-        ))->toArray();
+        $result = [];
+
+        foreach ($data['data'] as $rate) {
+            $result[] = new GasRateDTO(
+                periodStart: Carbon::createFromTimestamp((int) $rate['start_date']),
+                periodEnd: Carbon::createFromTimestamp((int) $rate['end_date']),
+                period: (string) $rate['period'],
+                marketPrice: (int) $rate['market_price'],
+                totalPriceTaxIncluded: (int) $rate['total_price_tax_included'],
+                priceInclHandlingVat: (int) $rate['price_incl_handling_vat'],
+                priceTaxWithVat: (int) $rate['price_tax_with_vat'],
+                metadata: [
+                    'start_date_datetime' => $rate['start_date_datetime'] ?? null,
+                    'source' => 'zonneplan_api',
+                ]
+            );
+        }
+
+        return $result;
     }
 }

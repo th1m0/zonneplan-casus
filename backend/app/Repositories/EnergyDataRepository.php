@@ -10,10 +10,13 @@ use App\DTOs\GasRateDTO;
 use App\Models\ElectricityRate;
 use App\Models\GasRate;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 final class EnergyDataRepository implements EnergyDataRepositoryInterface
 {
+    /**
+     * @param  array<int, ElectricityRateDTO>  $rates
+     */
     public function storeElectricityRates(array $rates): void
     {
         $data = collect($rates)->map(fn (ElectricityRateDTO $dto): array => $dto->toArray())->toArray();
@@ -38,6 +41,9 @@ final class EnergyDataRepository implements EnergyDataRepositoryInterface
         );
     }
 
+    /**
+     * @param  array<int, GasRateDTO>  $rates
+     */
     public function storeGasRates(array $rates): void
     {
         $data = collect($rates)->map(fn (GasRateDTO $dto): array => $dto->toArray())->toArray();
@@ -60,23 +66,19 @@ final class EnergyDataRepository implements EnergyDataRepositoryInterface
         );
     }
 
+    /**
+     * @return Collection<int, ElectricityRate>
+     */
     public function getElectricityRatesForDay(Carbon $date): Collection
     {
         return ElectricityRate::forDay($date)->get();
     }
 
+    /**
+     * @return Collection<int, GasRate>
+     */
     public function getGasRatesForDay(Carbon $date): Collection
     {
         return GasRate::forDay($date)->get();
-    }
-
-    public function getAvailableElectricityDays(): Collection
-    {
-        return ElectricityRate::availableDays()->pluck('rate_date');
-    }
-
-    public function getAvailableGasDays(): Collection
-    {
-        return GasRate::availableDays()->pluck('rate_date');
     }
 }
