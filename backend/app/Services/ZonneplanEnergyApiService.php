@@ -12,8 +12,14 @@ use Exception;
 use Illuminate\Http\Client\Factory as HttpClient;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @phpstan-import-type ZonneplanApiElectricityResponse from \App\Types\ZonneplanApiTypes
+ * @phpstan-import-type ZonneplanApiGasResponse from \App\Types\ZonneplanApiTypes
+ */
 final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInterface
 {
+    private const TIMEZONE = 'Europe/Amsterdam';
+
     public function __construct(
         private HttpClient $httpClient,
         private string $baseUrl,
@@ -27,33 +33,16 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
      */
     public function getElectricityRates(Carbon $date): array
     {
-        // TODO: Uncomment and implement actual API call
         try {
             $response = $this->httpClient->withHeaders([
-                // 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Accept' => 'application/json',
-            ])->get($this->baseUrl.'/electricity/upcoming', [
-                'date' => $date->format('Y-m-d'),
-                'secret' => $this->apiKey,
-            ]);
+            ])->get($this->baseUrl.'/electricity/upcoming', $this->getQueryParams($date));
 
             if (! $response->successful()) {
                 throw new Exception('API request failed: '.$response->status());
             }
 
-            /** @var array{data: array<int, array{
-             *     start_date: int|string,
-             *     end_date: int|string,
-             *     period: string,
-             *     market_price: int|string,
-             *     total_price_tax_included: int|string,
-             *     price_incl_handling_vat: int|string,
-             *     price_tax_with_vat: int|string,
-             *     pricing_profile?: string|null,
-             *     carbon_footprint_in_gram?: int|string|null,
-             *     sustainability_score?: int|string|null,
-             *     start_date_datetime?: string|null
-             * }>} $data
+            /** @var ZonneplanApiElectricityResponse $data
              */
             $data = $response->json();
 
@@ -74,30 +63,16 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
      */
     public function getGasRates(Carbon $date): array
     {
-
         try {
             $response = $this->httpClient->withHeaders([
-                'Authorization' => 'Bearer '.$this->apiKey,
                 'Accept' => 'application/json',
-            ])->get($this->baseUrl.'/electricity/upcoming', [
-                'date' => $date->format('Y-m-d'),
-                'secret' => 'mzRqGxv9dzaatsFgcXoVJbh6pdMDwDxEWBhbZ89r',
-            ]);
+            ])->get($this->baseUrl.'/gas/upcoming', $this->getQueryParams($date));
 
             if (! $response->successful()) {
                 throw new Exception('API request failed: '.$response->status());
             }
 
-            /** @var array{data: array<int, array{
-             *     start_date: int|string,
-             *     end_date: int|string,
-             *     period: string,
-             *     market_price: int|string,
-             *     total_price_tax_included: int|string,
-             *     price_incl_handling_vat: int|string,
-             *     price_tax_with_vat: int|string,
-             *     start_date_datetime?: string|null
-             * }>} $data
+            /** @var ZonneplanApiGasResponse $data
              */
             $data = $response->json();
 
@@ -112,19 +87,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
     }
 
     /**
-     * @param array{data: array<int, array{
-     *     start_date: int|string,
-     *     end_date: int|string,
-     *     period: string,
-     *     market_price: int|string,
-     *     total_price_tax_included: int|string,
-     *     price_incl_handling_vat: int|string,
-     *     price_tax_with_vat: int|string,
-     *     pricing_profile?: string|null,
-     *     carbon_footprint_in_gram?: int|string|null,
-     *     sustainability_score?: int|string|null,
-     *     start_date_datetime?: string|null
-     * }>} $data
+     * @param  ZonneplanApiElectricityResponse  $data
      * @return array<int, ElectricityRateDTO>
      */
     private function transformElectricityData(array $data): array
@@ -133,8 +96,8 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
 
         foreach ($data['data'] as $rate) {
             $result[] = new ElectricityRateDTO(
-                periodStart: Carbon::createFromTimestamp((int) $rate['start_date']),
-                periodEnd: Carbon::createFromTimestamp((int) $rate['end_date']),
+                periodStart: Carbon::createFromTimestamp((int) $rate['start_date'], self::TIMEZONE),
+                periodEnd: Carbon::createFromTimestamp((int) $rate['end_date'], self::TIMEZONE),
                 period: (string) $rate['period'],
                 marketPrice: (int) $rate['market_price'],
                 totalPriceTaxIncluded: (int) $rate['total_price_tax_included'],
@@ -154,16 +117,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
     }
 
     /**
-     * @param array{data: array<int, array{
-     *     start_date: int|string,
-     *     end_date: int|string,
-     *     period: string,
-     *     market_price: int|string,
-     *     total_price_tax_included: int|string,
-     *     price_incl_handling_vat: int|string,
-     *     price_tax_with_vat: int|string,
-     *     start_date_datetime?: string|null
-     * }>} $data
+     * @param  ZonneplanApiGasResponse  $data
      * @return array<int, GasRateDTO>
      */
     private function transformGasData(array $data): array
@@ -172,8 +126,8 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
 
         foreach ($data['data'] as $rate) {
             $result[] = new GasRateDTO(
-                periodStart: Carbon::createFromTimestamp((int) $rate['start_date']),
-                periodEnd: Carbon::createFromTimestamp((int) $rate['end_date']),
+                periodStart: Carbon::createFromTimestamp((int) $rate['start_date'], self::TIMEZONE),
+                periodEnd: Carbon::createFromTimestamp((int) $rate['end_date'], self::TIMEZONE),
                 period: (string) $rate['period'],
                 marketPrice: (int) $rate['market_price'],
                 totalPriceTaxIncluded: (int) $rate['total_price_tax_included'],
@@ -187,5 +141,23 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         }
 
         return $result;
+    }
+
+    /**
+     * @param  Carbon  $date
+     * @return array<string, string>
+     */
+    private function getQueryParams(Carbon $date): array
+    {
+        $queryParams = [
+            'secret' => $this->apiKey,
+        ];
+
+        // don't include date if it's today -- broken gas endpoint not showing anything when date is added
+        if (!$date->isToday()) {
+            $queryParams['date'] = $date->format('Y-m-d');
+        }
+
+        return $queryParams;
     }
 }

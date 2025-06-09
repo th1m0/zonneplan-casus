@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\Carbon;
+use Database\Factories\GasRateFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 final class GasRate extends Model
 {
+    /** @use HasFactory<GasRateFactory> */
     use HasFactory;
 
     /**
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'period_start',
@@ -49,7 +51,17 @@ final class GasRate extends Model
      */
     public function scopeForDay(Builder $query, Carbon $date): Builder
     {
-        return $query->where('rate_date', $date->toDateString());
+        return $query->where('rate_date', $date->toDateString())
+            ->orderBy('period_start'); // Added ordering for consistency
+    }
+
+    /**
+     * @param  Builder<GasRate>  $query
+     * @return Builder<GasRate>
+     */
+    public function scopeCompleteDay(Builder $query, Carbon $date): Builder
+    {
+        return $query->forDay($date)->havingRaw('COUNT(*) = 24');
     }
 
     /**
@@ -58,7 +70,7 @@ final class GasRate extends Model
      */
     public function scopeLatestDay(Builder $query): Builder
     {
-        return $query->orderBy('rate_date', 'desc');
+        return $query->orderBy('rate_date', 'desc')->limit(24);
     }
 
     // Accessors for euro conversion
@@ -80,5 +92,26 @@ final class GasRate extends Model
     public function getPriceTaxWithVatInEurosAttribute(): float
     {
         return $this->price_tax_with_vat / 1000000;
+    }
+
+    // Method accessors
+    public function getMarketPriceInEuros(): float
+    {
+        return $this->market_price_in_euros;
+    }
+
+    public function getTotalPriceInEuros(): float
+    {
+        return $this->total_price_in_euros;
+    }
+
+    public function getPriceInclHandlingVatInEuros(): float
+    {
+        return $this->price_incl_handling_vat_in_euros;
+    }
+
+    public function getPriceTaxWithVatInEuros(): float
+    {
+        return $this->price_tax_with_vat_in_euros;
     }
 }

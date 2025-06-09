@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\Carbon;
+use Database\Factories\ElectricityRateFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 final class ElectricityRate extends Model
 {
+    /** @use HasFactory<ElectricityRateFactory> */
     use HasFactory;
 
     /**
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'period_start',
@@ -95,5 +97,26 @@ final class ElectricityRate extends Model
     public function getPriceTaxWithVatInEurosAttribute(): float
     {
         return $this->price_tax_with_vat / 1000000;
+    }
+
+    // Add these missing accessors that match the DTO methods
+    public function getMarketPriceInEuros(): float
+    {
+        return $this->market_price_in_euros;
+    }
+
+    public function getTotalPriceInEuros(): float
+    {
+        return $this->total_price_in_euros;
+    }
+
+    public function getPriceInclHandlingVatInEuros(): float
+    {
+        return $this->price_incl_handling_vat_in_euros;
+    }
+
+    public function getPriceTaxWithVatInEuros(): float
+    {
+        return $this->price_tax_with_vat_in_euros;
     }
 }

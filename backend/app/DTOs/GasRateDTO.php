@@ -6,6 +6,9 @@ namespace App\DTOs;
 
 use Carbon\Carbon;
 
+/**
+ * @phpstan-import-type GasRate from \App\Types\DTOTypes
+ */
 final readonly class GasRateDTO
 {
     /**
@@ -24,18 +27,7 @@ final readonly class GasRateDTO
     ) {}
 
     /**
-     * @return array{
-     *     period_start: Carbon,
-     *     period_end: Carbon,
-     *     rate_date: string,
-     *     period: string,
-     *     market_price: int,
-     *     total_price_tax_included: int,
-     *     price_incl_handling_vat: int,
-     *     price_tax_with_vat: int,
-     *     currency: string,
-     *     metadata: array<string, scalar|null>|null
-     * }
+     * @return GasRate
      */
     public function toArray(): array
     {

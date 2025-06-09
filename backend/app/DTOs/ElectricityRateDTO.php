@@ -6,6 +6,9 @@ namespace App\DTOs;
 
 use Carbon\Carbon;
 
+/**
+ * @phpstan-import-type ElectricityRate from \App\Types\DTOTypes
+ */
 final readonly class ElectricityRateDTO
 {
     /**
@@ -27,21 +30,7 @@ final readonly class ElectricityRateDTO
     ) {}
 
     /**
-     * @return array{
-     *     period_start: Carbon,
-     *     period_end: Carbon,
-     *     rate_date: string,
-     *     period: string,
-     *     market_price: int,
-     *     total_price_tax_included: int,
-     *     price_incl_handling_vat: int,
-     *     price_tax_with_vat: int,
-     *     pricing_profile: string|null,
-     *     carbon_footprint_in_gram: int|null,
-     *     sustainability_score: int|null,
-     *     currency: string,
-     *     metadata: array<string, scalar|null>|null
-     * }
+     * @return ElectricityRate
      */
     public function toArray(): array
     {

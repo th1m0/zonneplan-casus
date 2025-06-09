@@ -17,15 +17,35 @@ final class EnergyDataRepository implements EnergyDataRepositoryInterface
     /**
      * @param  array<int, ElectricityRateDTO>  $rates
      */
-    public function storeElectricityRates(array $rates): void
+    public function upsertElectricityRates(array $rates): void
     {
-        $data = collect($rates)->map(fn (ElectricityRateDTO $dto): array => $dto->toArray())->toArray();
+        $data = [];
+
+        foreach ($rates as $dto) {
+            $rateData = $dto->toArray();
+
+            // Convert Carbon objects to database-compatible strings
+            $rateData['period_start'] = $rateData['period_start']->format('Y-m-d H:i:s');
+            $rateData['period_end'] = $rateData['period_end']->format('Y-m-d H:i:s');
+
+            // Handle metadata array to JSON conversion for bulk insert
+            if (is_array($rateData['metadata'])) {
+                $rateData['metadata'] = json_encode($rateData['metadata']);
+            }
+
+            // Add timestamps for bulk insert
+            $now = now()->format('Y-m-d H:i:s');
+            $rateData['created_at'] = $now;
+            $rateData['updated_at'] = $now;
+
+            $data[] = $rateData;
+        }
 
         ElectricityRate::upsert(
             $data,
-            ['rate_date', 'period_start'], // Unique constraint
+            ['period_start', 'period_end'],
             [
-                'period_end',
+                'rate_date',
                 'period',
                 'market_price',
                 'total_price_tax_included',
@@ -44,16 +64,35 @@ final class EnergyDataRepository implements EnergyDataRepositoryInterface
     /**
      * @param  array<int, GasRateDTO>  $rates
      */
-    public function storeGasRates(array $rates): void
+    public function upsertGasRates(array $rates): void
     {
-        $data = collect($rates)->map(fn (GasRateDTO $dto): array => $dto->toArray())->toArray();
+        $data = [];
+
+        foreach ($rates as $dto) {
+            $rateData = $dto->toArray();
+
+            // Convert Carbon objects to database-compatible strings
+            $rateData['period_start'] = $rateData['period_start']->format('Y-m-d H:i:s');
+            $rateData['period_end'] = $rateData['period_end']->format('Y-m-d H:i:s');
+
+            // Handle metadata array to JSON conversion for bulk insert
+            if (is_array($rateData['metadata'])) {
+                $rateData['metadata'] = json_encode($rateData['metadata']);
+            }
+
+            // Add timestamps for bulk insert
+            $now = now()->format('Y-m-d H:i:s');
+            $rateData['created_at'] = $now;
+            $rateData['updated_at'] = $now;
+
+            $data[] = $rateData;
+        }
 
         GasRate::upsert(
             $data,
-            ['rate_date'], // Unique constraint
+            ['period_start', 'period_end'],
             [
-                'period_start',
-                'period_end',
+                'rate_date',
                 'period',
                 'market_price',
                 'total_price_tax_included',

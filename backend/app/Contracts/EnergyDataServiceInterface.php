@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Contracts;
 
-use Carbon\Carbon;
 use App\DTOs\ElectricityRateDTO;
 use App\DTOs\GasRateDTO;
+use Carbon\Carbon;
 
 interface EnergyDataServiceInterface
 {
