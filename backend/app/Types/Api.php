@@ -11,7 +11,6 @@ namespace App\Types;
  *     price_incl_handling_vat: float,
  *     price_tax_with_vat: float
  * }
- *
  * @phpstan-type ElectricityRateResponse array{
  *     period_start: string,
  *     period_end: string,
@@ -28,7 +27,6 @@ namespace App\Types;
  *     metadata: array<int|string, mixed>|null,
  *     prices_in_euros: PriceInEuros
  * }
- *
  * @phpstan-type GasRateResponse array{
  *     period_start: string,
  *     period_end: string,

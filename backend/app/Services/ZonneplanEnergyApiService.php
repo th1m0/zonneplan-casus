@@ -144,7 +144,6 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
     }
 
     /**
-     * @param  Carbon  $date
      * @return array<string, string>
      */
     private function getQueryParams(Carbon $date): array
@@ -154,7 +153,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         ];
 
         // don't include date if it's today -- broken gas endpoint not showing anything when date is added
-        if (!$date->isToday()) {
+        if (! $date->isToday()) {
             $queryParams['date'] = $date->format('Y-m-d');
         }
 
