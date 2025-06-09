@@ -28,3 +28,5 @@ This project uses a [Dev Container](https://code.visualstudio.com/docs/remote/co
 - [ ] [Price history screen](https://zonneplan.notion.site/Casus-Software-Engineer-PHP-TypeScript-1762101fa2b080dca7bbf83f8a16f139#1762101fa2b080e4a2a1dc54bc849cc0)
 
 ### Backend
+
+- add tests
