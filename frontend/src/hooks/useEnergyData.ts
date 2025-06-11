@@ -112,7 +112,7 @@ export const useProcessedElectricityPrices = (
 export const useProcessedGasPrices = (
   date?: Date,
 ): {
-  data: { current: GasRatesResponse[number] | null } | null;
+  data: { price: GasRatesResponse[number] | null } | null;
   isLoading: boolean;
   isFetching: boolean;
   error: Error | null;
@@ -129,9 +129,12 @@ export const useProcessedGasPrices = (
   const processedData = useMemo(() => {
     if (!rawPrices) return null;
 
-    const current = getCurrentGasPrice(rawPrices);
+    const price =
+      rawPrices.length > 1
+        ? getCurrentGasPrice(rawPrices)
+        : rawPrices[0] || null;
 
-    return { current };
+    return { price };
   }, [rawPrices]);
 
   return {

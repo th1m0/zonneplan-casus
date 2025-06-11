@@ -149,7 +149,7 @@ export function ElectricityPriceChart({
                 }}
               />
               <YAxis
-                tickFormatter={(value) => `€${Number(value).toFixed(3)}`}
+                tickFormatter={(value) => `€${value}`}
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
