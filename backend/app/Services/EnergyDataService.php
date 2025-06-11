@@ -38,12 +38,13 @@ final readonly class EnergyDataService
                 'date' => $date instanceof Carbon ? $date->format('Y-m-d') : 'today',
             ]);
         } catch (Exception $exception) {
+            $dateForLog = $date->format('Y-m-d');
             Log::error('Failed to sync electricity rates for day', [
                 'error' => $exception->getMessage(),
-                'date' => $date instanceof Carbon ? $date->format('Y-m-d') : 'today',
+                'date' => $dateForLog,
             ]);
             throw new EnergyDataException(
-                'Failed to sync electricity rates for '.($date instanceof Carbon ? $date->format('Y-m-d') : 'today').': '.$exception->getMessage(),
+                'Failed to sync electricity rates for '.$dateForLog.': '.$exception->getMessage(),
                 previous: $exception
             );
         }
@@ -152,7 +153,6 @@ final readonly class EnergyDataService
         if ($rates->isEmpty() || $this->isDataStale($rates)) {
             $this->syncElectricityRatesForDay();
             $rates = $this->getUpcomingElectricityRates();
-
         }
 
         return $rates;

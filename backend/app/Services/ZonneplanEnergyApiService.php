@@ -50,7 +50,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         } catch (Exception $exception) {
             Log::error('Failed to fetch electricity rates', [
                 'error' => $exception->getMessage(),
-                'date' => $date->format('Y-m-d'),
+                'date' => $date instanceof Carbon ? $date->format('Y-m-d') : 'today',
             ]);
             throw $exception;
         }
@@ -80,7 +80,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         } catch (Exception $exception) {
             Log::error('Failed to fetch gas rates', [
                 'error' => $exception->getMessage(),
-                'date' => $date->format('Y-m-d'),
+                'date' => $date instanceof Carbon ? $date->format('Y-m-d') : 'today',
             ]);
             throw $exception;
         }
