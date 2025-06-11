@@ -13,10 +13,10 @@ interface EnergyDataServiceInterface
     /**
      * @return array<int, ElectricityRateDTO>
      */
-    public function getElectricityRates(Carbon|null $date = null): array;
+    public function getElectricityRates(?Carbon $date = null): array;
 
     /**
      * @return array<int, GasRateDTO>
      */
-    public function getGasRates(Carbon|null $date = null): array;
+    public function getGasRates(?Carbon $date = null): array;
 }

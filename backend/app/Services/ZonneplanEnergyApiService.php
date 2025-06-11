@@ -31,7 +31,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
      *
      * @throws Exception
      */
-    public function getElectricityRates(Carbon|null $date = null): array
+    public function getElectricityRates(?Carbon $date = null): array
     {
         try {
             $response = $this->httpClient->withHeaders([
@@ -61,7 +61,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
      *
      * @throws Exception
      */
-    public function getGasRates(Carbon|null $date = null): array
+    public function getGasRates(?Carbon $date = null): array
     {
         try {
             $response = $this->httpClient->withHeaders([
@@ -146,13 +146,13 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
     /**
      * @return array<string, string>
      */
-    private function getQueryParams(Carbon|null $date = null): array
+    private function getQueryParams(?Carbon $date = null): array
     {
         $queryParams = [
             'secret' => $this->apiKey,
         ];
 
-        if (!$date) {
+        if (! $date instanceof Carbon) {
             return $queryParams;
         }
 

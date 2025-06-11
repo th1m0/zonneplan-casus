@@ -21,28 +21,29 @@ final readonly class EnergyDataService
         private EnergyDataRepositoryInterface $repository
     ) {}
 
-    public function syncElectricityRatesForDay(Carbon|null $date = null): void
+    public function syncElectricityRatesForDay(?Carbon $date = null): void
     {
         try {
             $rates = $this->apiService->getElectricityRates($date);
-            if ($date) {
+            if ($date instanceof Carbon) {
                 // Need to do this because the API cuts off the first 2 hours.
                 $previousDayRates = $this->apiService->getElectricityRates($date->copy()->subDay());
                 array_push($rates, ...$previousDayRates);
             }
+
             $this->repository->upsertElectricityRates($rates);
 
             Log::info('Successfully synced electricity rates for day', [
                 'count' => count($rates),
-                'date' => $date ? $date->format('Y-m-d') : 'today',
+                'date' => $date instanceof Carbon ? $date->format('Y-m-d') : 'today',
             ]);
         } catch (Exception $exception) {
             Log::error('Failed to sync electricity rates for day', [
                 'error' => $exception->getMessage(),
-                'date' => $date ? $date->format('Y-m-d') : 'today',
+                'date' => $date instanceof Carbon ? $date->format('Y-m-d') : 'today',
             ]);
             throw new EnergyDataException(
-                'Failed to sync electricity rates for '.($date ? $date->format('Y-m-d') : 'today').': '.$exception->getMessage(),
+                'Failed to sync electricity rates for '.($date instanceof Carbon ? $date->format('Y-m-d') : 'today').': '.$exception->getMessage(),
                 previous: $exception
             );
         }
