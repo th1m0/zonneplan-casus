@@ -120,4 +120,14 @@ final class EnergyDataRepository implements EnergyDataRepositoryInterface
     {
         return GasRate::forDay($date)->get();
     }
+
+    /**
+     * @return Collection<int, ElectricityRate>
+     */
+    public function getUpcomingElectricityRates(): Collection
+    {
+        return ElectricityRate::where('period_start', '>=', now()->floorHour())
+            ->orderBy('period_start')
+            ->get();
+    }
 }
