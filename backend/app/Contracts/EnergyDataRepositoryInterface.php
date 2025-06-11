@@ -32,4 +32,9 @@ interface EnergyDataRepositoryInterface
      * @return Collection<int, GasRate>
      */
     public function getGasRatesForDay(Carbon $date): Collection;
+
+    /**
+     * @return Collection<int, ElectricityRate>
+     */
+    public function getUpcomingElectricityRates(): Collection;
 }

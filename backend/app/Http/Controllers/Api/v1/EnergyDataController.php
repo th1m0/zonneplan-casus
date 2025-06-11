@@ -20,14 +20,29 @@ final readonly class EnergyDataController
 
     public function getElectricityRates(Request $request): JsonResponse
     {
-        /** @var string $dateString */
-        $dateString = $request->query('date', now()->format('Y-m-d'));
+        /** @var string|null $dateString */
+        $dateString = $request->query('date');
 
         if (! $dateString) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Date parameter is required (format: YYYY-MM-DD)',
-            ], 400);
+            try {
+                $rates = $this->energyDataService->getUpcomingElectricityRatesWithFreshness();
+
+                return response()->json([
+                    'success' => true,
+                    'data' => ElectricityRateResource::collection($rates),
+                    'meta' => [
+                        'type' => 'electricity_rates',
+                        'period' => 'upcoming',
+                        'count' => $rates->count(),
+                    ],
+                ]);
+            } catch (Exception $exception) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to retrieve upcoming electricity rates',
+                    'error' => $exception->getMessage(),
+                ], 500);
+            }
         }
 
         try {

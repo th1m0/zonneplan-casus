@@ -52,24 +52,8 @@ jobs:
       - name: Install PHP dependencies
         if: steps.php-cache.outputs.cache-hit != 'true'
         run: composer install --no-interaction --no-progress --ansi
-
-      - name: Get NPM cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-
-      - name: Cache dependencies
-        id: npm-cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install dependencies
-        if: steps.npm-cache.outputs.cache-hit != 'true' 
-        run: npm install
+        run: npm install --frozen-lockfile
 
       - name: Build dependencies
         run: npm run build
