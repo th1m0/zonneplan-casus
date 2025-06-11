@@ -13,8 +13,8 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
-import { ElectricityPriceDisplay } from "./ElectricityPriceDisplay";
-import { GasPriceDisplay } from "./GasPriceDisplay";
+import { ElectricityPriceDisplay } from "./electricityPriceDisplay";
+import { GasPriceDisplay } from "./gasPriceDisplay";
 import {
   useProcessedElectricityPrices,
   useProcessedGasPrices,
@@ -129,7 +129,7 @@ export default function PriceHistoryDashboard() {
         !error &&
         selectedDate &&
         electricityHook.data?.allPrices.length === 0 &&
-        gasHook.data?.current === null && (
+        gasHook.data?.price === null && (
           <Alert className="mb-6">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Geen gegevens</AlertTitle>

@@ -48,7 +48,7 @@ export function HighlightedPriceCard({
       </CardHeader>
       <CardContent>
         <div className="text-xl font-bold">
-          {!!price && price}{" "}
+          {!!price && price.toFixed(3)}{" "}
           <span className="text-muted-foreground text-xs">{unit}</span>
         </div>
         <p className="text-muted-foreground text-xs">om {time}</p>

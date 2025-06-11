@@ -1,4 +1,4 @@
-import { CurrentPriceCard } from "./CurrentPriceCard";
+import { PriceCard } from "./priceCard";
 import { formatDisplayDate } from "~/lib/dateUtils";
 import { Flame } from "lucide-react";
 import type { useProcessedGasPrices } from "~/hooks/useEnergyData";
@@ -17,7 +17,7 @@ export function GasPriceDisplay({
         Gas
       </h2>
       {isLoading && !data && (
-        <CurrentPriceCard
+        <PriceCard
           title="Huidige Gasprijs"
           Icon={Flame}
           iconColor="text-orange-500"
@@ -25,7 +25,7 @@ export function GasPriceDisplay({
         />
       )}
       {gasPrice ? (
-        <CurrentPriceCard
+        <PriceCard
           title="Huidige Gasprijs"
           price={gasPrice.prices_in_euros.total_price_tax_included}
           unit={unit}

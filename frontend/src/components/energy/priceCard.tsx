@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 import { Undo2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-type CurrentPriceCardProps = {
+type PriceCardProps = {
   title: string;
   iconColor?: string;
   Icon: LucideIcon;
@@ -23,12 +23,12 @@ type CurrentPriceCardProps = {
     }
 );
 
-export function CurrentPriceCard({
+export function PriceCard({
   title,
   Icon,
   iconColor = "text-primary",
   ...priceProps
-}: CurrentPriceCardProps) {
+}: PriceCardProps) {
   if (priceProps.isLoading) {
     return (
       <Card className="w-full">
@@ -64,7 +64,7 @@ export function CurrentPriceCard({
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {priceProps.price}{" "}
+          {priceProps.price.toFixed(3)}{" "}
           <span className="text-muted-foreground text-xs">
             {priceProps.unit}
           </span>

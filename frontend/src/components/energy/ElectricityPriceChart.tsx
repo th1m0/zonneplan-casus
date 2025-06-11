@@ -51,7 +51,7 @@ export function ElectricityPriceChart({
     );
     return sortedData.map((price) => ({
       time: formatDisplayTime(price.period_start),
-      price: price.prices_in_euros.total_price_tax_included,
+      price: price.prices_in_euros.total_price_tax_included.toFixed(3),
       originalEntry: price,
     }));
   }, [data]);

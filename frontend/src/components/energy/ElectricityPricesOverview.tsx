@@ -1,4 +1,4 @@
-import { HighlightedPriceCard } from "./HighlightedPriceCard";
+import { HighlightedPriceCard } from "./highlightedPriceCard";
 import { formatDisplayTime } from "~/lib/dateUtils";
 import { TrendingDown, TrendingUp, Leaf } from "lucide-react";
 import type { useProcessedElectricityPrices } from "~/hooks/useEnergyData";

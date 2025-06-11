@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CurrentPriceCard } from "./CurrentPriceCard";
-import { ElectricityPricesOverview } from "./ElectricityPricesOverview";
-import { ElectricityPriceChart } from "./ElectricityPriceChart";
+import { PriceCard } from "./priceCard";
+import { ElectricityPricesOverview } from "./electricityPricesOverview";
+import { ElectricityPriceChart } from "./electricityPriceChart";
 import { formatDisplayTime, parseApiDateTime } from "~/lib/dateUtils";
 import { Bolt } from "lucide-react";
 import type { useProcessedElectricityPrices } from "~/hooks/useEnergyData";
@@ -70,7 +70,7 @@ export function ElectricityPriceDisplay({
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div className="lg:col-span-1">
           {isLoading && !displayPrice && (
-            <CurrentPriceCard
+            <PriceCard
               title={cardTitle}
               Icon={Bolt}
               iconColor="text-yellow-500"
@@ -78,7 +78,7 @@ export function ElectricityPriceDisplay({
             />
           )}
           {displayPrice ? (
-            <CurrentPriceCard
+            <PriceCard
               title={cardTitle}
               price={displayPrice.prices_in_euros.total_price_tax_included}
               unit={unit}
