@@ -76,22 +76,22 @@ final class GasRate extends Model
     // Accessors for euro conversion
     public function getMarketPriceInEurosAttribute(): float
     {
-        return $this->market_price / 1000000;
+        return $this->market_price / 10000000;
     }
 
     public function getTotalPriceInEurosAttribute(): float
     {
-        return $this->total_price_tax_included / 1000000;
+        return $this->total_price_tax_included / 10000000;
     }
 
     public function getPriceInclHandlingVatInEurosAttribute(): float
     {
-        return $this->price_incl_handling_vat / 1000000;
+        return $this->price_incl_handling_vat / 10000000;
     }
 
     public function getPriceTaxWithVatInEurosAttribute(): float
     {
-        return $this->price_tax_with_vat / 1000000;
+        return $this->price_tax_with_vat / 10000000;
     }
 
     // Method accessors
