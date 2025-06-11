@@ -1,8 +1,8 @@
 "use client";
 
 import { useEnergyData } from "~/hooks/useEnergyData";
-import { ElectricityPriceDisplay } from "./ElectricityPriceDisplay";
-import { GasPriceDisplay } from "./GasPriceDisplay";
+import { ElectricityPriceDisplay } from "./electricityPriceDisplay";
+import { GasPriceDisplay } from "./gasPriceDisplay";
 import { Button } from "~/components/ui/button";
 import { AlertCircle, RefreshCw, Wifi, WifiOff, History } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
@@ -21,8 +21,8 @@ export default function EnergyPriceDashboard() {
     lastUpdated,
   } = useEnergyData();
 
-  const handleRefresh = () => {
-    refetch();
+  const handleRefresh = async () => {
+    await refetch();
   };
 
   const isOnline = typeof navigator !== "undefined" ? navigator.onLine : true;

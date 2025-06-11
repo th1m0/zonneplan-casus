@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { parseApiDateTime, isSameHour, isSameDay } from "./dateUtils";
 import type { ElectricityRatesResponse } from "~/types/ElectricityRateApiResponse";
 import type { GasRatesResponse } from "~/types/GasRateApiResponse";
@@ -11,7 +10,7 @@ export const getCurrentElectricityPrice = (
     prices.find((price) => {
       const startTime = parseApiDateTime(price.period_start);
       return isSameHour(startTime, currentTime);
-    }) || null
+    }) ?? null
   );
 };
 
@@ -54,7 +53,7 @@ export const findMostSustainablePrice = (
   );
 
   return (
-    prices.find((p) => p.sustainability_score === maxSustainabilityScore) ||
+    prices.find((p) => p.sustainability_score === maxSustainabilityScore) ??
     null
   );
 };
@@ -67,6 +66,6 @@ export const getCurrentGasPrice = (
     prices.find((price) => {
       const startTime = parseApiDateTime(price.period_start);
       return isSameDay(startTime, date);
-    }) || null
+    }) ?? null
   );
 };

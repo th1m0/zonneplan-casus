@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type QueryObserverResult } from "@tanstack/react-query";
 import { useMemo } from "react";
 import {
   fetchElectricityPrices,
@@ -59,7 +59,7 @@ export const useProcessedElectricityPrices = (
   isLoading: boolean;
   isFetching: boolean;
   error: Error | null;
-  refetch: () => void;
+  refetch: () => Promise<QueryObserverResult<ElectricityRatesResponse, Error>>;
 } => {
   const {
     data: prices,
@@ -112,11 +112,11 @@ export const useProcessedElectricityPrices = (
 export const useProcessedGasPrices = (
   date?: Date,
 ): {
-  data: { current: GasRatesResponse[number] | null } | null;
+  data: { price: GasRatesResponse[number] | null } | null;
   isLoading: boolean;
   isFetching: boolean;
   error: Error | null;
-  refetch: () => void;
+  refetch: () => Promise<QueryObserverResult<GasRatesResponse, Error>>;
 } => {
   const {
     data: rawPrices,
@@ -129,9 +129,12 @@ export const useProcessedGasPrices = (
   const processedData = useMemo(() => {
     if (!rawPrices) return null;
 
-    const current = getCurrentGasPrice(rawPrices);
+    const price =
+      rawPrices.length > 1
+        ? getCurrentGasPrice(rawPrices)
+        : (rawPrices[0] ?? null);
 
-    return { current };
+    return { price };
   }, [rawPrices]);
 
   return {
@@ -149,11 +152,11 @@ export const useEnergyData = () => {
 
   const isLoading = electricity.isLoading || gas.isLoading;
   const isFetching = electricity.isFetching || gas.isFetching;
-  const error = electricity.error || gas.error;
+  const error = electricity.error ?? gas.error;
 
-  const refetch = () => {
-    electricity.refetch();
-    gas.refetch();
+  const refetch = async () => {
+    await electricity.refetch();
+    await gas.refetch();
   };
 
   const lastUpdated =
@@ -166,7 +169,7 @@ export const useEnergyData = () => {
     gas: gas.data,
     isLoading,
     isFetching,
-    error: error?.message || null,
+    error: error?.message ?? null,
     lastUpdated,
     refetch,
   };

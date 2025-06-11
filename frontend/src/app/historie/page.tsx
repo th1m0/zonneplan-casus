@@ -1,4 +1,4 @@
-import PriceHistoryDashboard from "~/components/energy/PriceHistoryDashboard";
+import PriceHistoryDashboard from "~/components/energy/priceHistoryDashboard";
 
 export default function HistoryPage() {
   return (

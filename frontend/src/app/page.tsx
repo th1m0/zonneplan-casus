@@ -1,4 +1,4 @@
-import EnergyPriceDashboard from "~/components/energy/EnergyPriceDashboard";
+import EnergyPriceDashboard from "~/components/energy/energyPriceDashboard";
 
 export default function HomePage() {
   return (

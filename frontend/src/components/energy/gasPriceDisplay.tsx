@@ -1,4 +1,4 @@
-import { CurrentPriceCard } from "./CurrentPriceCard";
+import { PriceCard } from "./priceCard";
 import { formatDisplayDate } from "~/lib/dateUtils";
 import { Flame } from "lucide-react";
 import type { useProcessedGasPrices } from "~/hooks/useEnergyData";
@@ -7,7 +7,7 @@ export function GasPriceDisplay({
   data,
   isLoading,
 }: Pick<ReturnType<typeof useProcessedGasPrices>, "data" | "isLoading">) {
-  const currentPrice = data?.current;
+  const gasPrice = data?.price;
   const unit = "€/m³";
 
   return (
@@ -17,19 +17,19 @@ export function GasPriceDisplay({
         Gas
       </h2>
       {isLoading && !data && (
-        <CurrentPriceCard
+        <PriceCard
           title="Huidige Gasprijs"
           Icon={Flame}
           iconColor="text-orange-500"
           isLoading={true}
         />
       )}
-      {currentPrice ? (
-        <CurrentPriceCard
+      {gasPrice ? (
+        <PriceCard
           title="Huidige Gasprijs"
-          price={currentPrice.total_price_tax_included}
+          price={gasPrice.prices_in_euros.total_price_tax_included}
           unit={unit}
-          timeLabel={`Voor vandaag, ${formatDisplayDate(currentPrice.period_start)}`}
+          timeLabel={`Voor vandaag, ${formatDisplayDate(gasPrice.period_start)}`}
           Icon={Flame}
           iconColor="text-orange-500"
         />

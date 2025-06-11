@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CurrentPriceCard } from "./CurrentPriceCard";
-import { ElectricityPricesOverview } from "./ElectricityPricesOverview";
-import { ElectricityPriceChart } from "./ElectricityPriceChart";
+import { PriceCard } from "./priceCard";
+import { ElectricityPricesOverview } from "./electricityPricesOverview";
+import { ElectricityPriceChart } from "./electricityPriceChart";
 import { formatDisplayTime, parseApiDateTime } from "~/lib/dateUtils";
 import { Bolt } from "lucide-react";
 import type { useProcessedElectricityPrices } from "~/hooks/useEnergyData";
@@ -24,29 +24,25 @@ export function ElectricityPriceDisplay({
   >(data?.current ?? data?.allPrices?.[0] ?? null);
 
   useEffect(() => {
-    console.log("useEffect data", data?.current);
     if (selectedChartPrice) return;
 
     if (data) {
-      console.log("setting selectedChartPrice", data.current);
       setSelectedChartPrice(data?.current ?? data?.allPrices?.[0] ?? null);
     }
-  }, [isLoading]);
+  }, [isLoading, selectedChartPrice, data]);
 
   const actualCurrentPrice = data?.current;
-  const displayPrice = selectedChartPrice || actualCurrentPrice;
+  const displayPrice = selectedChartPrice ?? actualCurrentPrice;
   const unit = "€/kWh";
 
   const handleChartClick = (
     priceEntry: ElectricityRatesResponse[number] | null,
   ) => {
-    console.log("setting selectedChartPrice", priceEntry);
     setSelectedChartPrice(priceEntry);
   };
 
   const handleResetToCurrent = () => {
-    console.log("setting selectedChartPrice", data?.current || null);
-    setSelectedChartPrice(data?.current || null);
+    setSelectedChartPrice(data?.current ?? null);
   };
 
   const canGoBackToCurrent =
@@ -70,7 +66,7 @@ export function ElectricityPriceDisplay({
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div className="lg:col-span-1">
           {isLoading && !displayPrice && (
-            <CurrentPriceCard
+            <PriceCard
               title={cardTitle}
               Icon={Bolt}
               iconColor="text-yellow-500"
@@ -78,7 +74,7 @@ export function ElectricityPriceDisplay({
             />
           )}
           {displayPrice ? (
-            <CurrentPriceCard
+            <PriceCard
               title={cardTitle}
               price={displayPrice.prices_in_euros.total_price_tax_included}
               unit={unit}

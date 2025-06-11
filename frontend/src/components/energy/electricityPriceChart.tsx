@@ -51,23 +51,23 @@ export function ElectricityPriceChart({
     );
     return sortedData.map((price) => ({
       time: formatDisplayTime(price.period_start),
-      price: price.prices_in_euros.total_price_tax_included,
+      price: price.prices_in_euros.total_price_tax_included.toFixed(3),
       originalEntry: price,
     }));
   }, [data]);
 
   const handleChartClick: CategoricalChartFunc = (event) => {
     if (
-      event &&
-      event.activePayload &&
+      event?.activePayload &&
       event.activePayload.length > 0 &&
       onChartClick
     ) {
-      const clickedData = event.activePayload[0].payload;
-      if (clickedData && clickedData.originalEntry) {
-        onChartClick(
-          clickedData.originalEntry as ElectricityRatesResponse[number],
-        );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const clickedData = event?.activePayload?.[0]?.payload as {
+        originalEntry?: ElectricityRatesResponse[number];
+      };
+      if (clickedData?.originalEntry) {
+        onChartClick(clickedData.originalEntry);
       }
     }
   };
@@ -143,13 +143,13 @@ export function ElectricityPriceChart({
                 tickMargin={8}
                 tickFormatter={(value, index) => {
                   if (index % 3 === 0) {
-                    return value;
+                    return value as string;
                   }
                   return "";
                 }}
               />
               <YAxis
-                tickFormatter={(value) => `€${Number(value).toFixed(3)}`}
+                tickFormatter={(value) => `€${value}`}
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
@@ -159,7 +159,7 @@ export function ElectricityPriceChart({
                 cursor={true}
                 content={
                   <ChartTooltipContent
-                    formatter={(value) => [`€ ${value}`, " per kWh"]}
+                    formatter={(value) => [`€ ${value.toString()}`, " per kWh"]}
                     labelFormatter={(label) => `Tijd: ${label}`}
                   />
                 }
