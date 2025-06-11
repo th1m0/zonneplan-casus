@@ -21,8 +21,8 @@ export default function EnergyPriceDashboard() {
     lastUpdated,
   } = useEnergyData();
 
-  const handleRefresh = () => {
-    refetch();
+  const handleRefresh = async () => {
+    await refetch();
   };
 
   const isOnline = typeof navigator !== "undefined" ? navigator.onLine : true;
