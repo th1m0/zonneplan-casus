@@ -31,7 +31,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
      *
      * @throws Exception
      */
-    public function getElectricityRates(Carbon $date): array
+    public function getElectricityRates(Carbon|null $date = null): array
     {
         try {
             $response = $this->httpClient->withHeaders([
@@ -61,7 +61,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
      *
      * @throws Exception
      */
-    public function getGasRates(Carbon $date): array
+    public function getGasRates(Carbon|null $date = null): array
     {
         try {
             $response = $this->httpClient->withHeaders([
@@ -146,16 +146,17 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
     /**
      * @return array<string, string>
      */
-    private function getQueryParams(Carbon $date): array
+    private function getQueryParams(Carbon|null $date = null): array
     {
         $queryParams = [
             'secret' => $this->apiKey,
         ];
 
-        // don't include date if it's today -- broken gas endpoint not showing anything when date is added
-        if (! $date->isToday()) {
-            $queryParams['date'] = $date->format('Y-m-d');
+        if (!$date) {
+            return $queryParams;
         }
+
+        $queryParams['date'] = $date->format('Y-m-d');
 
         return $queryParams;
     }
