@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type QueryObserverResult } from "@tanstack/react-query";
 import { useMemo } from "react";
 import {
   fetchElectricityPrices,
@@ -59,7 +59,7 @@ export const useProcessedElectricityPrices = (
   isLoading: boolean;
   isFetching: boolean;
   error: Error | null;
-  refetch: () => void;
+  refetch: () => Promise<QueryObserverResult<ElectricityRatesResponse, Error>>;
 } => {
   const {
     data: prices,
@@ -116,7 +116,7 @@ export const useProcessedGasPrices = (
   isLoading: boolean;
   isFetching: boolean;
   error: Error | null;
-  refetch: () => void;
+  refetch: () => Promise<QueryObserverResult<GasRatesResponse, Error>>;
 } => {
   const {
     data: rawPrices,
@@ -132,7 +132,7 @@ export const useProcessedGasPrices = (
     const price =
       rawPrices.length > 1
         ? getCurrentGasPrice(rawPrices)
-        : rawPrices[0] || null;
+        : (rawPrices[0] ?? null);
 
     return { price };
   }, [rawPrices]);
@@ -152,11 +152,11 @@ export const useEnergyData = () => {
 
   const isLoading = electricity.isLoading || gas.isLoading;
   const isFetching = electricity.isFetching || gas.isFetching;
-  const error = electricity.error || gas.error;
+  const error = electricity.error ?? gas.error;
 
-  const refetch = () => {
-    electricity.refetch();
-    gas.refetch();
+  const refetch = async () => {
+    await electricity.refetch();
+    await gas.refetch();
   };
 
   const lastUpdated =
@@ -169,7 +169,7 @@ export const useEnergyData = () => {
     gas: gas.data,
     isLoading,
     isFetching,
-    error: error?.message || null,
+    error: error?.message ?? null,
     lastUpdated,
     refetch,
   };

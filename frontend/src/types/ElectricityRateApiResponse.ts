@@ -11,9 +11,10 @@ export type PriceInEuros = {
 /**
  * Metadata object for electricity rates - flexible key-value pairs
  */
-export type ElectricityRateMetadata = {
-  [key: string]: string | number | boolean | null;
-};
+export type ElectricityRateMetadata = Record<
+  string,
+  string | number | boolean | null
+>;
 
 /**
  * Pricing profile types for electricity rates
@@ -23,7 +24,7 @@ export type PricingProfile = "standard" | "peak" | "off-peak" | "dynamic";
 /**
  * Supported currency codes
  */
-export type Currency = "EUR" | string;
+export type Currency = "EUR";
 
 /**
  * Complete electricity rate response from the API

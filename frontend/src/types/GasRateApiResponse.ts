@@ -11,14 +11,12 @@ export type PriceInEuros = {
 /**
  * Metadata object for gas rates - flexible key-value pairs
  */
-export type GasRateMetadata = {
-  [key: string]: string | number | boolean | null;
-};
+export type GasRateMetadata = Record<string, string | number | boolean | null>;
 
 /**
  * Supported currency codes
  */
-export type Currency = "EUR" | string;
+export type Currency = "EUR";
 
 /**
  * Complete gas rate response from the API

@@ -31,16 +31,16 @@ export default function PriceHistoryDashboard() {
 
   const isLoading = electricityHook.isLoading || gasHook.isLoading;
   const isFetching = electricityHook.isFetching || gasHook.isFetching;
-  const error = electricityHook.error || gasHook.error;
+  const error = electricityHook.error ?? gasHook.error;
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     if (selectedDate) {
-      electricityHook.refetch();
-      gasHook.refetch();
+      await electricityHook.refetch();
+      await gasHook.refetch();
     }
   };
 

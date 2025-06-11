@@ -24,29 +24,25 @@ export function ElectricityPriceDisplay({
   >(data?.current ?? data?.allPrices?.[0] ?? null);
 
   useEffect(() => {
-    console.log("useEffect data", data?.current);
     if (selectedChartPrice) return;
 
     if (data) {
-      console.log("setting selectedChartPrice", data.current);
       setSelectedChartPrice(data?.current ?? data?.allPrices?.[0] ?? null);
     }
-  }, [isLoading]);
+  }, [isLoading, selectedChartPrice, data]);
 
   const actualCurrentPrice = data?.current;
-  const displayPrice = selectedChartPrice || actualCurrentPrice;
+  const displayPrice = selectedChartPrice ?? actualCurrentPrice;
   const unit = "€/kWh";
 
   const handleChartClick = (
     priceEntry: ElectricityRatesResponse[number] | null,
   ) => {
-    console.log("setting selectedChartPrice", priceEntry);
     setSelectedChartPrice(priceEntry);
   };
 
   const handleResetToCurrent = () => {
-    console.log("setting selectedChartPrice", data?.current || null);
-    setSelectedChartPrice(data?.current || null);
+    setSelectedChartPrice(data?.current ?? null);
   };
 
   const canGoBackToCurrent =
