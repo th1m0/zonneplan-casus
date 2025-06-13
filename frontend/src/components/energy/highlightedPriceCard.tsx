@@ -52,11 +52,6 @@ export function HighlightedPriceCard({
           <span className="text-muted-foreground text-xs">{unit}</span>
         </div>
         <p className="text-muted-foreground text-xs">om {time}</p>
-        {sustainabilityScore !== undefined && sustainabilityScore !== null && (
-          <p className="text-muted-foreground text-xs">
-            Duurzaamheid: {sustainabilityScore}/1000
-          </p>
-        )}
       </CardContent>
     </Card>
   );
