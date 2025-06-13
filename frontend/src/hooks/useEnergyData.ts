@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, type QueryObserverResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import {
   fetchElectricityPrices,
@@ -15,16 +15,14 @@ import {
   findMostSustainablePrice,
   getCurrentGasPrice,
 } from "~/lib/priceCalculations";
-import type { ElectricityRatesResponse } from "~/types/ElectricityRateApiResponse";
-import type { GasRatesResponse } from "~/types/GasRateApiResponse";
 
 export const useElectricityPrices = (date?: Date) => {
   const queryKey = energyQueryKeys.electricity(date);
   return useQuery({
     queryKey: queryKey,
     queryFn: () => fetchElectricityPrices(date),
-    staleTime: date ? Number.POSITIVE_INFINITY : 5 * 60 * 1000,
-    refetchInterval: date ? false : 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
@@ -35,32 +33,14 @@ export const useGasPrices = (date?: Date) => {
   return useQuery({
     queryKey: queryKey,
     queryFn: () => fetchGasPrices(date),
-    staleTime: date ? Number.POSITIVE_INFINITY : 15 * 60 * 1000,
-    refetchInterval: date ? false : 15 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 15 * 60 * 1000,
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };
 
-export const useProcessedElectricityPrices = (
-  date?: Date,
-): {
-  data: {
-    current: ElectricityRatesResponse[number] | null;
-    upcoming: ElectricityRatesResponse | null;
-    cheapestUpcoming: ElectricityRatesResponse[number] | null;
-    mostExpensiveUpcoming: ElectricityRatesResponse[number] | null;
-    mostSustainableUpcoming: ElectricityRatesResponse[number] | null;
-    cheapestCurrent: ElectricityRatesResponse[number] | null;
-    mostExpensiveCurrent: ElectricityRatesResponse[number] | null;
-    mostSustainableCurrent: ElectricityRatesResponse[number] | null;
-    allPrices: ElectricityRatesResponse;
-  } | null;
-  isLoading: boolean;
-  isFetching: boolean;
-  error: Error | null;
-  refetch: () => Promise<QueryObserverResult<ElectricityRatesResponse, Error>>;
-} => {
+export const useProcessedElectricityPrices = (date?: Date) => {
   const {
     data: prices,
     isLoading,
@@ -109,15 +89,7 @@ export const useProcessedElectricityPrices = (
   };
 };
 
-export const useProcessedGasPrices = (
-  date?: Date,
-): {
-  data: { price: GasRatesResponse[number] | null } | null;
-  isLoading: boolean;
-  isFetching: boolean;
-  error: Error | null;
-  refetch: () => Promise<QueryObserverResult<GasRatesResponse, Error>>;
-} => {
+export const useProcessedGasPrices = (date?: Date) => {
   const {
     data: rawPrices,
     isLoading,

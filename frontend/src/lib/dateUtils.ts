@@ -2,7 +2,6 @@ import { format } from "date-fns";
 import { nl } from "date-fns/locale";
 
 export const parseApiDateTime = (dateTimeStr: string): Date => {
-  if (!dateTimeStr) throw new Error("foo bar");
   return new Date(dateTimeStr);
 };
 
