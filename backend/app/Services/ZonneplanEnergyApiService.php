@@ -95,12 +95,16 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         $result = [];
 
         foreach ($data['data'] as $rate) {
+            if (! is_int($rate['total_price_tax_included'])) {
+                continue;
+            }
+
             $result[] = new ElectricityRateDTO(
                 periodStart: Carbon::createFromTimestamp((int) $rate['start_date'], self::TIMEZONE),
                 periodEnd: Carbon::createFromTimestamp((int) $rate['end_date'], self::TIMEZONE),
                 period: (string) $rate['period'],
                 marketPrice: (int) $rate['market_price'],
-                totalPriceTaxIncluded: (int) $rate['total_price_tax_included'],
+                totalPriceTaxIncluded: $rate['total_price_tax_included'],
                 priceInclHandlingVat: (int) $rate['price_incl_handling_vat'],
                 priceTaxWithVat: (int) $rate['price_tax_with_vat'],
                 pricingProfile: $rate['pricing_profile'] ?? null,
@@ -125,12 +129,16 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         $result = [];
 
         foreach ($data['data'] as $rate) {
+            if (! is_int($rate['total_price_tax_included'])) {
+                continue;
+            }
+
             $result[] = new GasRateDTO(
                 periodStart: Carbon::createFromTimestamp((int) $rate['start_date'], self::TIMEZONE),
                 periodEnd: Carbon::createFromTimestamp((int) $rate['end_date'], self::TIMEZONE),
                 period: (string) $rate['period'],
                 marketPrice: (int) $rate['market_price'],
-                totalPriceTaxIncluded: (int) $rate['total_price_tax_included'],
+                totalPriceTaxIncluded: $rate['total_price_tax_included'],
                 priceInclHandlingVat: (int) $rate['price_incl_handling_vat'],
                 priceTaxWithVat: (int) $rate['price_tax_with_vat'],
                 metadata: [
