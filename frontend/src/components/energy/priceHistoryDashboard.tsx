@@ -112,7 +112,6 @@ export default function PriceHistoryDashboard() {
           <AlertDescription>
             Kon gegevens niet laden voor{" "}
             {selectedDate ? format(selectedDate, "dd-MM-yyyy") : ""}:{" "}
-            {error.message}.
             <Button
               onClick={handleRefresh}
               variant="link"
