@@ -12,8 +12,6 @@ use Exception;
 use Illuminate\Http\Client\Factory as HttpClient;
 use Illuminate\Support\Facades\Log;
 
-use function PHPUnit\Framework\isNull;
-
 /**
  * @phpstan-import-type ZonneplanApiElectricityResponse from \App\Types\ZonneplanApiTypes
  * @phpstan-import-type ZonneplanApiGasResponse from \App\Types\ZonneplanApiTypes
@@ -97,7 +95,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         $result = [];
 
         foreach ($data['data'] as $rate) {
-            if ($rate['total_price_tax_included'] === null) {
+            if (! is_int($rate['total_price_tax_included'])) {
                 continue;
             }
 
@@ -106,7 +104,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
                 periodEnd: Carbon::createFromTimestamp((int) $rate['end_date'], self::TIMEZONE),
                 period: (string) $rate['period'],
                 marketPrice: (int) $rate['market_price'],
-                totalPriceTaxIncluded: (int) $rate['total_price_tax_included'],
+                totalPriceTaxIncluded: $rate['total_price_tax_included'],
                 priceInclHandlingVat: (int) $rate['price_incl_handling_vat'],
                 priceTaxWithVat: (int) $rate['price_tax_with_vat'],
                 pricingProfile: $rate['pricing_profile'] ?? null,
@@ -131,7 +129,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
         $result = [];
 
         foreach ($data['data'] as $rate) {
-            if ($rate['total_price_tax_included'] === null) {
+            if (! is_int($rate['total_price_tax_included'])) {
                 continue;
             }
 
@@ -140,7 +138,7 @@ final readonly class ZonneplanEnergyApiService implements EnergyDataServiceInter
                 periodEnd: Carbon::createFromTimestamp((int) $rate['end_date'], self::TIMEZONE),
                 period: (string) $rate['period'],
                 marketPrice: (int) $rate['market_price'],
-                totalPriceTaxIncluded: (int) $rate['total_price_tax_included'],
+                totalPriceTaxIncluded: $rate['total_price_tax_included'],
                 priceInclHandlingVat: (int) $rate['price_incl_handling_vat'],
                 priceTaxWithVat: (int) $rate['price_tax_with_vat'],
                 metadata: [
