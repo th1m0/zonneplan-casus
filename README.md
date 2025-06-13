@@ -29,3 +29,12 @@ This project uses a [Dev Container](https://code.visualstudio.com/docs/remote/co
 ### Backend
 
 - add tests
+
+---
+
+## Future plans
+
+- transform into a better monorepo (having both backend and frontend use pnpm)
+- add tests
+- add better error handling in the frontend (errors as values -- maybe with [nververthrow](https://www.npmjs.com/package/neverthrow))
+- deployment
