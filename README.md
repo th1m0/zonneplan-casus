@@ -4,7 +4,65 @@ Task: [Casus Software Engineer (PHP/TypeScript)](https://zonneplan.notion.site/C
 
 ## Setup
 
-This project uses a [Dev Container](https://code.visualstudio.com/docs/remote/containers) to setup the project. This makes it a nice isolated development environment and doesn't require you to install any dependencies on your local machine. All you need is [Visual Studio Code](https://code.visualstudio.com/) and [Docker](https://www.docker.com/).
+### Frontend
+
+1. cd into the frontend folder
+
+```bash
+cd frontend
+```
+
+2. Install dependencies
+
+```bash
+pnpm install
+```
+
+3. add environment variables
+
+```bash
+cp .env.example .env.local
+```
+
+4. start the development server
+
+```bash
+pnpm dev
+```
+
+### Backend
+
+1. cd into the backend folder
+
+```bash
+cd backend
+```
+
+2. Install dependencies
+
+```bash
+composer install
+npm install
+```
+
+3. add environment variables
+
+```bash
+cp .env.example .env
+```
+
+The `.env` requires the following variables:
+
+```sh
+ZONNEPLAN_API_BASE_URL=""
+ZONNEPLAN_API_KEY=""
+```
+
+4. start the development server
+
+```bash
+composer dev
+```
 
 ## Tech Stack
 
@@ -14,11 +72,27 @@ This project uses a [Dev Container](https://code.visualstudio.com/docs/remote/co
 - Tailwind CSS
 - TypeScript
 - TanStack Query
+- Shadcn UI
+
+Tooling:
+
+- ESLint (linting)
+- Prettier (formatting)
+- Tsc (typechecking)
 
 ### Backend
 
 - PHP
 - Laravel
+
+Tooling:
+
+- PHPStan (typechecking)
+- Pint (linting)
+- Rector (refactoring)
+- Pest (testing)
+
+---
 
 ## TODO
 
